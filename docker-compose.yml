@@ -1,0 +1,41 @@
+version: "3.9"
+services:
+  koha:
+    container_name: koha
+    build: .
+    ports:
+      - 8080:8080
+      - 8081:8081
+      - 80:80
+    networks:
+      - koha
+    cap_add:
+      - DAC_READ_SEARCH
+      - SYS_NICE
+    env_file:
+      - .env
+    depends_on:
+      - db
+
+
+  db:
+    container_name: koha_mariadb
+    image: mariadb:10.6
+    volumes:
+      - mariadb-koha:/var/lib/mysql
+    environment:
+        MARIADB_ROOT_PASSWORD: root
+        MARIADB_DATABASE: koha
+        MARIADB_USER: koha
+        MARIADB_PASSWORD: koha
+        DB-NAME: koha
+    networks:
+      - koha
+
+
+
+volumes:
+    mariadb-koha:
+
+networks:
+    koha:
